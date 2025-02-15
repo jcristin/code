@@ -73,7 +73,7 @@ lojas = [
 ]
 
 # Raio do círculo em metros
-raio = 200
+raio = 500
 
 # Lista para armazenar os círculos
 features = []
