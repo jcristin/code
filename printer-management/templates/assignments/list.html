@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Atribuições de Impressoras</h2>
+    <a href="{{ url_for('new_assignment') }}" class="btn btn-success">Nova Atribuição</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Impressora</th>
+                <th>Cliente</th>
+                <th>Vendedor</th>
+                <th>Data de Atribuição</th>
+                <th>Data de Devolução</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assignment in assignments %}
+            <tr>
+                <td>{{ assignment.printer.model }} ({{ assignment.printer.serial_number }})</td>
+                <td>{{ assignment.client.name }}</td>
+                <td>{{ assignment.seller.name }}</td>
+                <td>{{ assignment.assigned_date.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>
+                    {% if assignment.return_date %}
+                        {{ assignment.return_date.strftime('%d/%m/%Y %H:%M') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if assignment.status == 'active' %}
+                        <span class="badge bg-primary">Ativa</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Devolvida</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if assignment.status == 'active' %}
+                        <form method="POST" action="{{ url_for('return_printer', id=assignment.id) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Confirmar devolução da impressora?')">
+                                Devolver
+                            </button>
+                        </form>
+                        <a href="{{ url_for('report_issue', printer_id=assignment.printer.id) }}" class="btn btn-sm btn-danger">
+                            Reportar Problema
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not assignments %}
+<div class="alert alert-info">
+    Nenhuma atribuição registrada.
+</div>
+{% endif %}
+{% endblock %}

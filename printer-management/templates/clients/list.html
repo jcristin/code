@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Clientes</h2>
+    <a href="{{ url_for('add_client') }}" class="btn btn-success">Novo Cliente</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
+                <th>Impressoras Ativas</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+            <tr>
+                <td>{{ client.name }}</td>
+                <td>{{ client.email }}</td>
+                <td>{{ client.phone }}</td>
+                <td>{{ client.address }}</td>
+                <td>
+                    {% set active_printers = client.assignments|selectattr('status', 'equalto', 'active')|list %}
+                    {{ active_printers|length }}
+                </td>
+                <td>
+                    <a href="{{ url_for('new_assignment', client_id=client.id) }}" class="btn btn-sm btn-primary">Nova Atribuição</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not clients %}
+<div class="alert alert-info">
+    Nenhum cliente cadastrado.
+</div>
+{% endif %}
+{% endblock %}

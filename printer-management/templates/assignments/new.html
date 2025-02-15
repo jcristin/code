@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Nova Atribuição de Impressora</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="printer_id" class="form-label">Impressora</label>
+                        <select class="form-select" id="printer_id" name="printer_id" required>
+                            <option value="">Selecione uma impressora...</option>
+                            {% for printer in printers %}
+                            <option value="{{ printer.id }}" {% if request.args.get('printer_id')|int == printer.id %}selected{% endif %}>
+                                {{ printer.model }} ({{ printer.serial_number }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="seller_id" class="form-label">Vendedor</label>
+                        <select class="form-select" id="seller_id" name="seller_id" required>
+                            <option value="">Selecione um vendedor...</option>
+                            {% for seller in sellers %}
+                            <option value="{{ seller.id }}" {% if request.args.get('seller_id')|int == seller.id %}selected{% endif %}>
+                                {{ seller.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="client_id" class="form-label">Cliente</label>
+                        <select class="form-select" id="client_id" name="client_id" required>
+                            <option value="">Selecione um cliente...</option>
+                            {% for client in clients %}
+                            <option value="{{ client.id }}" {% if request.args.get('client_id')|int == client.id %}selected{% endif %}>
+                                {{ client.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Criar Atribuição</button>
+                        <a href="{{ url_for('list_assignments') }}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not printers %}
+<div class="alert alert-warning mt-4">
+    Não há impressoras disponíveis para atribuição.
+</div>
+{% endif %}
+
+{% if not sellers %}
+<div class="alert alert-warning mt-4">
+    Não há vendedores cadastrados. <a href="{{ url_for('add_seller') }}">Cadastrar vendedor</a>
+</div>
+{% endif %}
+
+{% if not clients %}
+<div class="alert alert-warning mt-4">
+    Não há clientes cadastrados. <a href="{{ url_for('add_client') }}">Cadastrar cliente</a>
+</div>
+{% endif %}
+{% endblock %}
